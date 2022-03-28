@@ -1,0 +1,28 @@
+{
+  "name": "font-search-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+    "start": "nodemon ./src/index"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fepaf/font-search.git"
+  },
+  "author": "Francisco Elio Parente Arcos Filho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fepaf/font-search/issues"
+  },
+  "homepage": "https://github.com/fepaf/font-search#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "axios": "^0.26.1",
+    "express": "^4.17.3",
+    "http": "^0.0.1-security"
+  }
+}
