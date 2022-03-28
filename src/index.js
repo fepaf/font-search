@@ -1,7 +1,8 @@
+const axios = require("axios");
 const express = require("express");
 const fs = require("fs");
-const axios = require("axios");
 const http = require("http");
+const path = require("path");
 
 app = express();
 
@@ -28,20 +29,45 @@ async function get_fonts(font_name){
 }
 
 save_file = function(response, family, file_name){
-    const dirname = `${__dirname}/files/${family}`;
+    const dirname = path.join(__dirname, "files", family);;
 
     if (!fs.existsSync(dirname)){
         fs.mkdirSync(dirname, {recursive: true },  (err) => {
             if (err) throw err;
         });
     }
-    const path = `${dirname}/${file_name}.ttf`; 
-    const filePath = fs.createWriteStream(path);
+    const path_complete = path.join(dirname, `${file_name}.ttf`); 
+    const filePath = fs.createWriteStream(path_complete);
     response.pipe(filePath);
     filePath.on('finish',() => {
         filePath.close();
         console.log('Download Completed'); 
     });
+}
+
+search_file = function(prefix_path, file_target){
+
+    if (!fs.existsSync(prefix_path)){
+        console.log(`No directory ${prefix_path}`);
+        return false;
+    }
+
+    var files = fs.readdirSync(prefix_path);
+    var result = false;
+    for (var i=0; i<files.length; i++){
+        var filename = path.join(prefix_path, files[i]);
+
+        if (files[i] === file_target){
+            return true;
+        }
+
+        var status = fs.lstatSync(filename);
+        if (status.isDirectory()){
+            result |= search_file(filename, file_target);
+        }
+    }
+
+    return result;
 }
 
 app.get('/download', async (request, response) => {
@@ -63,6 +89,16 @@ app.get('/download', async (request, response) => {
     response.status(200).json({data: fonts_to_save});
 });
 
+app.get('/search', (request, response) => {
+    const { fontname } = request.query;
+
+    search_status= search_file(__dirname, fontname);
+
+    response.status(200).json({message : search_status ? "Found" : "Not Found"});
+});
+
 app.listen(9001, '0.0.0.0', () => {
     console.log("Aplication started!");
+
+    // console.log(fs.lstatSync(`${__dirname}`).isDirectory());
 });
