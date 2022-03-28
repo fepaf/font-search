@@ -99,6 +99,4 @@ app.get('/search', (request, response) => {
 
 app.listen(9001, '0.0.0.0', () => {
     console.log("Aplication started!");
-
-    // console.log(fs.lstatSync(`${__dirname}`).isDirectory());
 });
